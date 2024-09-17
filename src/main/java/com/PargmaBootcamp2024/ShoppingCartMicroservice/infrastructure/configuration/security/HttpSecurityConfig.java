@@ -1,6 +1,6 @@
-package com.PargmaBootcamp2024.ShoppingCartMicroservice.configuration.security;
+package com.PargmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.security;
 
-import com.PargmaBootcamp2024.ShoppingCartMicroservice.configuration.security.filter.JwtAuthenticationFilter;
+import com.PargmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

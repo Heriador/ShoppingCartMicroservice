@@ -1,4 +1,4 @@
-package com.PargmaBootcamp2024.ShoppingCartMicroservice.configuration.util;
+package com.PargmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.util;
 
 public class AuthenticationConstants {
     public static final String INVALID_TOKEN_MESSAGE = "Invalid token";

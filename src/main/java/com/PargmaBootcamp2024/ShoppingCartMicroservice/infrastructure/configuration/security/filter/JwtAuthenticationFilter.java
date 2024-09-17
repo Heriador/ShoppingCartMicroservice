@@ -1,7 +1,7 @@
-package com.PargmaBootcamp2024.ShoppingCartMicroservice.configuration.security.filter;
+package com.PargmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.security.filter;
 
-import com.PargmaBootcamp2024.ShoppingCartMicroservice.configuration.security.CustomUserDetailsService;
-import com.PargmaBootcamp2024.ShoppingCartMicroservice.configuration.util.AuthenticationConstants;
+import com.PargmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.security.CustomUserDetailsService;
+import com.PargmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.util.AuthenticationConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

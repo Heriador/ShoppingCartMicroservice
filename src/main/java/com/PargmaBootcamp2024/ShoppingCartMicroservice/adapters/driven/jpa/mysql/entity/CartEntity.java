@@ -17,10 +17,20 @@ public class CartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private Long userId;
-    private Long productId;
+
+    @Column(nullable = false)
+    private Long itemId;
+
+    @Column(nullable = false)
     private Integer quantity;
+
+    @Column(nullable = false)
     private Date createdAt;
+
+    @Column(nullable = false)
     private Date updatedAt;
 
 }

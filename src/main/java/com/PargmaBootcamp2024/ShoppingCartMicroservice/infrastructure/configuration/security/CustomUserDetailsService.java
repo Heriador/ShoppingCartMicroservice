@@ -1,4 +1,4 @@
-package com.PargmaBootcamp2024.ShoppingCartMicroservice.configuration.security;
+package com.PargmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.security;
 
 
 import com.PargmaBootcamp2024.ShoppingCartMicroservice.adapters.driven.jpa.mysql.util.JwtService;
