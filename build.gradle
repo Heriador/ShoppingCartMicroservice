@@ -32,6 +32,7 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.6.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.1'
+	implementation 'io.github.openfeign:feign-httpclient:11.8'
 
 
 	compileOnly 'org.projectlombok:lombok'
