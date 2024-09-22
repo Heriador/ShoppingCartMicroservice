@@ -1,6 +1,6 @@
-package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.http.mapper;
+package com.PragmaBootcamp2024.ShoppingCartMicroservice.application.mapper;
 
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.http.Dto.response.CartResponse;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import org.mapstruct.Mapper;
 

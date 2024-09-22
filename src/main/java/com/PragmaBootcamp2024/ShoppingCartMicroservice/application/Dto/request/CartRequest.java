@@ -1,4 +1,4 @@
-package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.http.Dto.request;
+package com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request;
 
 
 import lombok.AllArgsConstructor;

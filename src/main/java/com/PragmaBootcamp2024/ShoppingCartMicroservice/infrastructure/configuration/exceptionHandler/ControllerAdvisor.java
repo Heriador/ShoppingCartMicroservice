@@ -1,5 +1,6 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.exceptionHandler;
 
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NotEnoughStockException;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,11 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(NotEnoughStockException.class)
     public ResponseEntity<Map<String,String>> handleNotEnoughStockException(NotEnoughStockException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",e.getMessage()));
+    }
+
+    @ExceptionHandler(LimitItemPerCategoryException.class)
+    public ResponseEntity<Map<String,String>> handleLimitItemPerCategoryException(LimitItemPerCategoryException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",e.getMessage()));
     }
 

@@ -7,7 +7,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IAuthenticationPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartPersistencePort;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class CartUseCases implements ICartServicePort {
 
@@ -34,10 +34,11 @@ public class CartUseCases implements ICartServicePort {
 
             cart = createCart(userId);
         }
+        cartDetails.setCartId(cart.getId());
 
-        cartDetailsServicePort.addProduct(cartDetails.getItemId(), cartDetails);
+        cartDetailsServicePort.addProduct(cartDetails);
 
-        cart.setUpdatedAt(new Date());
+        cart.setUpdatedAt(LocalDateTime.now());
         cartPersistencePort.saveCart(cart);
     }
 
@@ -47,8 +48,8 @@ public class CartUseCases implements ICartServicePort {
         Cart cart = new Cart();
 
         cart.setUserId(userId);
-        cart.setCreatedAt(new Date());
-        cart.setUpdatedAt(new Date());
+        cart.setCreatedAt(LocalDateTime.now());
+        cart.setUpdatedAt(LocalDateTime.now());
         cartPersistencePort.saveCart(cart);
 
         return cart;

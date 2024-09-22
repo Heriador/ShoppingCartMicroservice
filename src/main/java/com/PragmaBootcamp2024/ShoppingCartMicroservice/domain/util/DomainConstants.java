@@ -12,6 +12,11 @@ public class DomainConstants {
 
     public static final String SUPPLY_DATE_FORMAT = "EEEE, MMMM dd, yyyy";
     public static final CartDetails NULL_CART_DETAILS = null;
+    public static final String LIMIT_ITEM_PER_CATEGORY_EXCEPTION_MESSAGE = "Limit of 3 items per category reached";
+    public static final Integer DEFAULT_COUNT_VALUE = 0;
+    public static final Integer ADDITIONAL_COUNT_VALUE = 1;
+    public static final Integer LIMIT_ITEM_PER_CATEGORY = 3;
+    public static final Integer ZERO_QUANTITY = 0;
 
     private DomainConstants() {
     }

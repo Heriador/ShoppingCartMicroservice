@@ -44,7 +44,7 @@ public class BeanConfiguration {
 
     @Bean
     public IStockPersistencePort stockPersistencePort(){
-        return new StockAdapter(stockFeignClient);
+        return new StockFeignAdapter(stockFeignClient);
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.DomainConstants;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartDetailsServicePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
@@ -11,7 +12,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ITransactionPe
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import java.util.*;
 
 public class CartDetailsUseCases implements ICartDetailsServicePort {
 
@@ -29,10 +30,10 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     }
 
     @Override
-    public void addProduct(Long cartId, CartDetails cartDetails) {
+    public void addProduct(CartDetails cartDetails) {
 
 
-        CartDetails existingDetail = cartDetailsPersistencePort.getCartDetails(cartId, cartDetails.getItemId())
+        CartDetails existingDetail = cartDetailsPersistencePort.getCartDetails(cartDetails.getCartId(), cartDetails.getItemId())
                                                                         .orElse(DomainConstants.NULL_CART_DETAILS);
 
         validateItemExistence(cartDetails.getItemId());
@@ -49,8 +50,13 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
 
         }
         else{
-            cartDetails.setCartId(cartId);
+            List<Long> itemIds = new ArrayList<>(cartDetailsPersistencePort.getItemIdsByCartId(cartDetails.getCartId()));
+            itemIds.add(cartDetails.getItemId());
+
+            validateLimitItemPerCategory(itemIds);
+
             cartDetailsPersistencePort.addProductToCart(cartDetails);
+
         }
 
     }
@@ -62,7 +68,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     }
 
     private void validateQuantity(Integer quantity){
-        if(quantity <= 0){
+        if(quantity <= DomainConstants.ZERO_QUANTITY){
             throw new IllegalArgumentException(DomainConstants.QUANTITY_NOT_POSITIVE_MESSAGE);
         }
     }
@@ -81,6 +87,21 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
             throw new NotEnoughStockException(DomainConstants.INSUFFICIENT_STOCK_MESSAGE+
                     DomainConstants.NEXT_SUPPLY_DATE+
                     nextSupplyDate.format(formatter));
+        }
+    }
+
+    private void validateLimitItemPerCategory(List<Long> itemIds){
+        Map<String, Integer> categoriesCount = new HashMap<>();
+
+        for(Long itemId : itemIds){
+            List<String> categories = stockPersistencePort.getCategoriesNameByItemId(itemId);
+            for(String category : categories){
+                categoriesCount.put(category, categoriesCount
+                        .getOrDefault(category, DomainConstants.DEFAULT_COUNT_VALUE) + DomainConstants.ADDITIONAL_COUNT_VALUE);
+                if (categoriesCount.get(category) > DomainConstants.LIMIT_ITEM_PER_CATEGORY){
+                    throw new LimitItemPerCategoryException(DomainConstants.LIMIT_ITEM_PER_CATEGORY_EXCEPTION_MESSAGE);
+                }
+            }
         }
     }
 }

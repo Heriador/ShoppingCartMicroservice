@@ -6,9 +6,11 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mys
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartPersistencePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Transactional
 @RequiredArgsConstructor
 public class CartAdapter implements ICartPersistencePort {
 

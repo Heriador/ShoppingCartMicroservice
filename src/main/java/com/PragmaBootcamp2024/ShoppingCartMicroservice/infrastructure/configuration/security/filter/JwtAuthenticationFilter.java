@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try{
 
-            String jwt = authHeader.split(" ")[1];
+            String jwt = authHeader.split(AuthenticationConstants.TOKEN_SPLITTER)[1];
 
             UserDetails user = userDetailsService.loadUserByUsername(jwt);
 

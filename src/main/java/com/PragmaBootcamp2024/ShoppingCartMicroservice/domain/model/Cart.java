@@ -1,17 +1,17 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Cart {
     private Long id;
     private Long userId;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Cart() {
     }
 
-    public Cart(Long id, Long userId, Date createdAt, Date updatedAt) {
+    public Cart(Long id, Long userId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.userId = userId;
         this.createdAt = createdAt;
@@ -34,19 +34,19 @@ public class Cart {
         this.userId = userId;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

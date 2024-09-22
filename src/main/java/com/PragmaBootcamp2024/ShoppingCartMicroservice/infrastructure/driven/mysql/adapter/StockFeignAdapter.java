@@ -5,8 +5,10 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configurat
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
-public class StockAdapter implements IStockPersistencePort {
+public class StockFeignAdapter implements IStockPersistencePort {
 
     private final IStockFeignClient stockFeignClient;
 
@@ -28,5 +30,15 @@ public class StockAdapter implements IStockPersistencePort {
     @Override
     public Boolean hasStock(Long itemId, Integer quantity) {
         return stockFeignClient.hasStock(itemId, quantity);
+    }
+
+    @Override
+    public List<String> getCategoriesNameByItemId(Long itemId) {
+        try {
+            return stockFeignClient.getCategoriesNameByItemId(itemId);
+        }
+        catch(FeignException e) {
+            return List.of();
+        }
     }
 }

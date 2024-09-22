@@ -6,9 +6,12 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mys
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.repository.CartDetailsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @RequiredArgsConstructor
 public class CartDetailsAdapter implements ICartDetailsPersistencePort {
 
@@ -26,5 +29,10 @@ public class CartDetailsAdapter implements ICartDetailsPersistencePort {
         Optional<CartDetailsEntity> cartDetails = cartDetailsRepository.findByCartIdAndItemId(cartId, productId);
 
         return cartDetails.map(cartDetailsMapper::toCartDetails);
+    }
+
+    @Override
+    public List<Long> getItemIdsByCartId(Long cartId) {
+        return cartDetailsRepository.findItemIdsByCartId(cartId);
     }
 }
