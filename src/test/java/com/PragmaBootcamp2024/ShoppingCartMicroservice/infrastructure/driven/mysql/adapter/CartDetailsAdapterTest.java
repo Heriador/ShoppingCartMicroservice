@@ -2,6 +2,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.my
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartDetailsFactory;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.entity.CartDetailsEntity;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.repository.CartDetailsRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -66,6 +67,23 @@ class CartDetailsAdapterTest {
         assertEquals(itemIds, cartDetailsAdapter.getItemIdsByCartId(1L));
 
         verify(cartDetailsRepository, times(1)).findItemIdsByCartId(1L);
+    }
+
+    @Test
+    @DisplayName("Delete item should pass")
+    void deleteItemShouldPass() {
+
+        CartDetailsEntity cartDetailsEntity = CartDetailsFactory.getCartDetailsEntity();
+        CartDetails cartDetails = CartDetailsFactory.getCartDetails();
+
+        when(cartDetailsMapper.toEntity(cartDetails)).thenReturn(cartDetailsEntity);
+        doNothing().when(cartDetailsRepository).delete(any(CartDetailsEntity.class));
+
+        cartDetailsAdapter.deleteItemFromCart(cartDetails);
+
+        verify(cartDetailsMapper, times(1)).toEntity(cartDetails);
+        verify(cartDetailsRepository, times(1)).delete(cartDetailsEntity);
+
     }
 
 }

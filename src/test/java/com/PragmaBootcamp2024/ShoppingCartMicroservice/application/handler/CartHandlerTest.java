@@ -50,4 +50,18 @@ class CartHandlerTest {
 
     }
 
+    @Test
+    @DisplayName("Delete item should pass")
+    void deleteItemShouldPass() {
+
+        Long itemId = 1L;
+
+        doNothing().when(cartServicePort).deleteItem(itemId);
+
+        cartHandler.deleteItem(itemId);
+
+        verify(cartServicePort, times(1)).deleteItem(itemId);
+
+    }
+
 }

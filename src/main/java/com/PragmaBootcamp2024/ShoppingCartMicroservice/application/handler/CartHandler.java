@@ -25,4 +25,12 @@ public class CartHandler implements ICartHandler {
 
         return new CartResponse(cartRequest.getQuantity(), cartRequest.getItemId());
     }
+
+    @Override
+    public CartResponse deleteItem(Long itemId) {
+
+        cartServicePort.deleteItem(itemId);
+
+        return null;
+    }
 }

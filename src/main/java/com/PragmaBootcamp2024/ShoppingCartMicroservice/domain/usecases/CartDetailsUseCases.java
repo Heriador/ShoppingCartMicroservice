@@ -61,6 +61,14 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
 
     }
 
+    @Override
+    public void deleteItem(Long itemId, Long id) {
+        CartDetails cartDetails = cartDetailsPersistencePort.getCartDetails(id, itemId)
+                .orElseThrow(() -> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
+
+        cartDetailsPersistencePort.deleteItemFromCart(cartDetails);
+    }
+
     private void validateItemExistence(Long itemId){
         if(Boolean.FALSE.equals(stockPersistencePort.existsById(itemId))){
             throw new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE);

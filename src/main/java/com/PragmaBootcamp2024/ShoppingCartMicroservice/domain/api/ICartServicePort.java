@@ -4,4 +4,6 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 
 public interface ICartServicePort {
     void addProduct(CartDetails cartDetails);
+
+    void deleteItem(Long itemId);
 }
