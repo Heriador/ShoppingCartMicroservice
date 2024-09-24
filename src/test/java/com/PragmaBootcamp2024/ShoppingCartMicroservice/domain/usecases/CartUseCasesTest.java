@@ -1,11 +1,13 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartDetailsServicePort;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IAuthenticationPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartDetailsFactory;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,6 +86,39 @@ class CartUseCasesTest {
         verify(cartPersistencePort, times(1)).existsCart(1L);
         verify(cartPersistencePort, times(2)).saveCart(any(Cart.class));
         verify(cartDetailsServicePort, times(1)).addProduct(cartDetails);
+    }
+
+    @Test
+    @DisplayName("Delete item from cart should pass")
+    void deleteItemFromCartShouldPass() {
+        // Arrange
+        Cart cart = CartFactory.getCart();
+
+        when(authenticationPersistencePort.getAuthenticatedUserId()).thenReturn(1L);
+        when(cartPersistencePort.existsCart(1L)).thenReturn(Optional.of(cart));
+        doNothing().when(cartDetailsServicePort).deleteItem(anyLong(), anyLong());
+        doNothing().when(cartPersistencePort).saveCart(cart);
+
+        // Act
+        cartUseCases.deleteItem(1L);
+
+        // Assert
+        verify(authenticationPersistencePort, times(1)).getAuthenticatedUserId();
+        verify(cartPersistencePort, times(1)).existsCart(1L);
+        verify(cartDetailsServicePort, times(1)).deleteItem(1L, 1L);
+        verify(cartPersistencePort, times(1)).saveCart(cart);
+    }
+
+    @Test
+    @DisplayName("Delete item from cart should throw exception")
+    void deleteItemFromCartShouldThrowException() {
+        // Arrange
+
+        when(authenticationPersistencePort.getAuthenticatedUserId()).thenReturn(1L);
+        when(cartPersistencePort.existsCart(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NoItemFoundException.class, () -> cartUseCases.deleteItem(1L));
     }
 
 }

@@ -166,4 +166,36 @@ class CartDetailsUseCasesTest {
         verify(cartDetailsPersistencePort, times(1)).getItemIdsByCartId(anyLong());
         verify(stockPersistencePort, times(4)).getCategoriesNameByItemId(anyLong());
     }
+
+    @Test
+    @DisplayName("Delete item from cart should pass")
+    void deleteItemFromCartShouldPass() {
+        // Arrange
+        CartDetails cartDetails = CartDetailsFactory.getCartDetails();
+
+        when(cartDetailsPersistencePort.getCartDetails(cartDetails.getCartId(), cartDetails.getItemId())).thenReturn(Optional.of(cartDetails));
+        doNothing().when(cartDetailsPersistencePort).deleteItemFromCart(cartDetails);
+
+        // Act
+        cartDetailsUseCases.deleteItem(cartDetails.getItemId(), cartDetails.getCartId());
+
+        // Assert
+        verify(cartDetailsPersistencePort, times(1)).getCartDetails(cartDetails.getCartId(), cartDetails.getItemId());
+        verify(cartDetailsPersistencePort, times(1)).deleteItemFromCart(cartDetails);
+    }
+
+    @Test
+    @DisplayName("Delete item from cart should throw NoItemFoundException")
+    void deleteItemFromCartShouldThrowNoItemFoundException() {
+        // Arrange
+        CartDetails cartDetails = CartDetailsFactory.getCartDetails();
+
+        when(cartDetailsPersistencePort.getCartDetails(anyLong(),anyLong())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NoItemFoundException.class, () -> cartDetailsUseCases.deleteItem(cartDetails.getItemId(), cartDetails.getCartId()));
+
+        // Assert
+        verify(cartDetailsPersistencePort, times(1)).getCartDetails(cartDetails.getCartId(), cartDetails.getItemId());
+    }
 }
