@@ -1,6 +1,7 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.adapter;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IStockPersistencePort;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.feignClient.IStockFeignClient;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,10 @@ public class StockFeignAdapter implements IStockPersistencePort {
         catch(FeignException e) {
             return List.of();
         }
+    }
+
+    @Override
+    public Object getCartPagination(List<Long> itemIds, PaginationUtil paginationUtil) {
+        return null;
     }
 }

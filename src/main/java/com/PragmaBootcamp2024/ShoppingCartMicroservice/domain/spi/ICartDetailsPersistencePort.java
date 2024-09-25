@@ -13,4 +13,6 @@ public interface ICartDetailsPersistencePort {
     List<Long> getItemIdsByCartId(Long cartId);
 
     void deleteItemFromCart(CartDetails cartDetails);
+
+    Optional<List<CartDetails>> findByCartId(Long cartId);
 }
