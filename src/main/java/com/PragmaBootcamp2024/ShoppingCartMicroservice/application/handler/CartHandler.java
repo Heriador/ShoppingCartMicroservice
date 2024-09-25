@@ -1,5 +1,6 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler;
 
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.DeleteResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
@@ -27,10 +28,9 @@ public class CartHandler implements ICartHandler {
     }
 
     @Override
-    public CartResponse deleteItem(Long itemId) {
+    public void deleteItem(Long itemId) {
 
         cartServicePort.deleteItem(itemId);
 
-        return null;
     }
 }

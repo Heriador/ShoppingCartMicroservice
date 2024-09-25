@@ -2,6 +2,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.h
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.DeleteResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler.ICartHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class CartRestController {
     private final ICartHandler cartHandler;
 
     @PreAuthorize(HAS_ROLE_CLIENT)
-    @PostMapping(ADD_PRODUCT_ROUTE)
+    @PostMapping(ADD_ITEM_ROUTE)
     public ResponseEntity<CartResponse> addProduct(@RequestBody CartRequest cartRequest) {
         CartResponse cartResponse = cartHandler.addProduct(cartRequest);
 
@@ -27,11 +28,11 @@ public class CartRestController {
     }
 
     @PreAuthorize(HAS_ROLE_CLIENT)
-    @DeleteMapping(DELETE_PRODUCT_ROUTE)
-    public ResponseEntity<CartResponse> deleteItem(@PathVariable Long itemId) {
-        CartResponse cartResponse = cartHandler.deleteItem(itemId);
+    @DeleteMapping(DELETE_ITEM_ROUTE)
+    public ResponseEntity<DeleteResponse> deleteItem(@PathVariable Long itemId) {
+        cartHandler.deleteItem(itemId);
 
-        return ResponseEntity.ok(cartResponse);
+        return ResponseEntity.ok(new DeleteResponse(itemId, DELETE_ITEM_SUCCESS_MESSAGE));
     }
 
 }
