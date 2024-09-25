@@ -1,6 +1,8 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.ItemCartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.QuantityNotPositiveException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.DomainConstants;
@@ -13,6 +15,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IStockPersiste
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ITransactionPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -73,17 +76,68 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     }
 
     @Override
-    public PaginationCustom<CartDetails> getCart(Long cartId, PaginationUtil paginationUtil) {
+    public PaginationCustom<Item> getCart(Long cartId, PaginationUtil paginationUtil) {
 
         List<CartDetails> cartDetails = cartDetailsPersistencePort.findByCartId(cartId)
                 .orElseThrow(() -> new NoItemFoundException(DomainConstants.CART_NOT_FOUND_EXCEPTION_MESSAGE));
 
         List<Long> itemIds = cartDetails.stream().map(CartDetails::getItemId).toList();
 
-        Object cartPagination = stockPersistencePort.getCartPagination(itemIds, paginationUtil);
+        ItemCartRequest itemCartRequest = new ItemCartRequest();
+        itemCartRequest.setItemIds(itemIds);
+        PaginationCustom<Item> cartPagination = stockPersistencePort.getCartPagination(itemCartRequest, paginationUtil);
 
-        return null;
+        cartPagination.getContent().forEach(item -> {
+            if(Objects.equals(item.getStock(), DomainConstants.ZERO_QUANTITY)){
+                LocalDate nextSupplyDate = transactionPersistencePort.getNextSupplyDateByItemId(item.getId());
+
+                if(nextSupplyDate == null || nextSupplyDate.isBefore(LocalDate.now())){
+                    item.setNextSupplyDate(DomainConstants.NO_SUPPLY_DATE);
+                }
+                else {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DomainConstants.SUPPLY_DATE_FORMAT,
+                            Locale.ENGLISH);
+                    item.setNextSupplyDate(nextSupplyDate.format(formatter));
+                }
+            }
+
+        });
+
+        BigDecimal totalPrice = calculateTotalPrice(cartId);
+
+        cartPagination.setTotalPrice(totalPrice);
+
+        return cartPagination;
     }
+
+    private BigDecimal calculateTotalPrice(Long cartId) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
+        List<Long> itemIds = cartDetailsPersistencePort.getItemIdsByCartId(cartId);
+
+        for(Long itemId : itemIds){
+          CartDetails cartDetails = cartDetailsPersistencePort.getCartDetails(cartId, itemId).orElse(null);
+
+          if(cartDetails == null){
+              continue;
+          }
+
+          BigDecimal itemPrice = stockPersistencePort.getPriceById(itemId);
+          totalPrice = totalPrice.add(itemPrice.multiply(BigDecimal.valueOf(cartDetails.getQuantity())));
+
+
+        }
+
+
+
+        return totalPrice;
+    }
+
+
+
+
+
+
 
     private void validateItemExistence(Long itemId){
         if(Boolean.FALSE.equals(stockPersistencePort.existsById(itemId))){

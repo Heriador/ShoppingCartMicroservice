@@ -5,6 +5,8 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartServicePo
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IAuthenticationPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.DomainConstants;
@@ -70,13 +72,12 @@ public class CartUseCases implements ICartServicePort {
     }
 
     @Override
-    public CartDetails getCart(PaginationUtil paginationUtil) {
+    public PaginationCustom<Item> getCart(PaginationUtil paginationUtil) {
 
         Long userId = authenticationPersistencePort.getAuthenticatedUserId();
 
         Cart cart = cartPersistencePort.existsCart(userId).orElseThrow(()-> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
 
-
-        return null;
+        return cartDetailsServicePort.getCart(cart.getId(), paginationUtil);
     }
 }

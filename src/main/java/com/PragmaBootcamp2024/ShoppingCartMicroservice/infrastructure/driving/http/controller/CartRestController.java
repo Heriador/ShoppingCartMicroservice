@@ -4,6 +4,8 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.C
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.DeleteResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler.ICartHandler;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,12 +40,12 @@ public class CartRestController {
 
     @PreAuthorize(HAS_ROLE_CLIENT)
     @GetMapping(GET_CART_ROUTE)
-    public ResponseEntity<CartResponse> getCart(
+    public ResponseEntity<PaginationCustom<Item>> getCart(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "order", defaultValue = "true") Boolean order,
-            @RequestParam(value = "brand", required = false) String filterByBrandName,
-            @RequestParam(value = "category", required = false) String filterByCategoryName
+            @RequestParam(required = false) String filterByBrandName,
+            @RequestParam(required = false) String filterByCategoryName
     ) {
         PaginationUtil paginationUtil = new PaginationUtil();
         paginationUtil.setPage(page);
@@ -51,27 +53,7 @@ public class CartRestController {
         paginationUtil.setOrder(order);
         paginationUtil.setFilterByBrandName(filterByBrandName);
         paginationUtil.setFilterByCategoryName(filterByCategoryName);
-        CartResponse cartResponse = cartHandler.getCart(paginationUtil);
-
-        return ResponseEntity.ok(cartResponse);
-    }
-
-    @PreAuthorize(HAS_ROLE_CLIENT)
-    @GetMapping(GET_CART_ROUTE)
-    public ResponseEntity<CartResponse> getCart(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size,
-            @RequestParam(value = "order", defaultValue = "true") Boolean order,
-            @RequestParam(value = "brand", required = false) String filterByBrandName,
-            @RequestParam(value = "category", required = false) String filterByCategoryName
-    ) {
-        PaginationUtil paginationUtil = new PaginationUtil();
-        paginationUtil.setPage(page);
-        paginationUtil.setSize(size);
-        paginationUtil.setOrder(order);
-        paginationUtil.setFilterByBrandName(filterByBrandName);
-        paginationUtil.setFilterByCategoryName(filterByCategoryName);
-        CartResponse cartResponse = cartHandler.getCart(paginationUtil);
+        PaginationCustom<Item> cartResponse = cartHandler.getCart(paginationUtil);
 
         return ResponseEntity.ok(cartResponse);
     }

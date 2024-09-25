@@ -14,6 +14,8 @@ public class FeignConstants {
 
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String GET_ITEMS_PAGINATED_BY_ID_ROUTE = "/item/items-cart";
+    public static final String GET_PRICE_BY_ID_ROUTE = "/item/price/{itemId}";
 
     private FeignConstants() {
     }
