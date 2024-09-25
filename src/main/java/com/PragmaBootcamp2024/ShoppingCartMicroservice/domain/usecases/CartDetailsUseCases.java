@@ -1,6 +1,7 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.QuantityNotPositiveException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.DomainConstants;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartDetailsServicePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
@@ -77,7 +78,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
 
     private void validateQuantity(Integer quantity){
         if(quantity <= DomainConstants.ZERO_QUANTITY){
-            throw new IllegalArgumentException(DomainConstants.QUANTITY_NOT_POSITIVE_MESSAGE);
+            throw new QuantityNotPositiveException(DomainConstants.QUANTITY_NOT_POSITIVE_MESSAGE);
         }
     }
 
