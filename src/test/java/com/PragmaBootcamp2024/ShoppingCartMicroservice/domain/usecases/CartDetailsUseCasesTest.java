@@ -3,6 +3,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NotEnoughStockException;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.QuantityNotPositiveException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartDetailsPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IStockPersistencePort;
@@ -89,7 +90,7 @@ class CartDetailsUseCasesTest {
         when(stockPersistencePort.existsById(anyLong())).thenReturn(true);
 
         // Act
-        assertThrows(IllegalArgumentException.class, () -> cartDetailsUseCases.addProduct(cartDetails));
+        assertThrows(QuantityNotPositiveException.class, () -> cartDetailsUseCases.addProduct(cartDetails));
 
         // Assert
         verify(cartDetailsPersistencePort, times(1)).getCartDetails(cartId, cartDetails.getItemId());
