@@ -1,7 +1,8 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.security;
 
 
-import lombok.RequiredArgsConstructor;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.security.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,12 +11,20 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Component
-@RequiredArgsConstructor
 public class SecurityBeanInjector {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final HandlerExceptionResolver exceptionResolver;
+
+    public SecurityBeanInjector(CustomUserDetailsService customUserDetailsService,
+                                @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.exceptionResolver = exceptionResolver;
+    }
+
 
 
     @Bean
@@ -35,5 +44,10 @@ public class SecurityBeanInjector {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(customUserDetailsService, exceptionResolver);
     }
 }
