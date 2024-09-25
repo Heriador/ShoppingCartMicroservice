@@ -13,4 +13,6 @@ public interface CartDetailsRepository extends JpaRepository<CartDetailsEntity, 
 
     @Query("SELECT cd.itemId  FROM CartDetailsEntity cd where cd.cartId = :cartId")
     List<Long> findItemIdsByCartId(@Param("cartId") Long cartId);
+
+    Optional<List<CartDetailsEntity>> findByCartId(Long cartId);
 }

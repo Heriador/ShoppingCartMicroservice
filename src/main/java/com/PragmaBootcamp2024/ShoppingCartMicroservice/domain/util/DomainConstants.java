@@ -17,6 +17,7 @@ public class DomainConstants {
     public static final Integer ADDITIONAL_COUNT_VALUE = 1;
     public static final Integer LIMIT_ITEM_PER_CATEGORY = 3;
     public static final Integer ZERO_QUANTITY = 0;
+    public static final String CART_NOT_FOUND_EXCEPTION_MESSAGE = "No items in cart";
 
     private DomainConstants() {
     }

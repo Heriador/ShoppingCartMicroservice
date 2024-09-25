@@ -3,6 +3,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.h
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler.ICartHandler;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,26 @@ public class CartRestController {
     @DeleteMapping(DELETE_PRODUCT_ROUTE)
     public ResponseEntity<CartResponse> deleteItem(@PathVariable Long itemId) {
         CartResponse cartResponse = cartHandler.deleteItem(itemId);
+
+        return ResponseEntity.ok(cartResponse);
+    }
+
+    @PreAuthorize(HAS_ROLE_CLIENT)
+    @GetMapping(GET_CART_ROUTE)
+    public ResponseEntity<CartResponse> getCart(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "order", defaultValue = "true") Boolean order,
+            @RequestParam(value = "brand", required = false) String filterByBrandName,
+            @RequestParam(value = "category", required = false) String filterByCategoryName
+    ) {
+        PaginationUtil paginationUtil = new PaginationUtil();
+        paginationUtil.setPage(page);
+        paginationUtil.setSize(size);
+        paginationUtil.setOrder(order);
+        paginationUtil.setFilterByBrandName(filterByBrandName);
+        paginationUtil.setFilterByCategoryName(filterByCategoryName);
+        CartResponse cartResponse = cartHandler.getCart(paginationUtil);
 
         return ResponseEntity.ok(cartResponse);
     }

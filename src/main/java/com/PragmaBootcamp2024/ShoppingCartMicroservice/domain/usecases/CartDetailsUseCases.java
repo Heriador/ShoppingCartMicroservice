@@ -1,6 +1,7 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.DomainConstants;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartDetailsServicePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
@@ -9,6 +10,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartDetailsPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IStockPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ITransactionPersistencePort;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -67,6 +69,19 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
                 .orElseThrow(() -> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
 
         cartDetailsPersistencePort.deleteItemFromCart(cartDetails);
+    }
+
+    @Override
+    public PaginationCustom<CartDetails> getCart(Long cartId, PaginationUtil paginationUtil) {
+
+        List<CartDetails> cartDetails = cartDetailsPersistencePort.findByCartId(cartId)
+                .orElseThrow(() -> new NoItemFoundException(DomainConstants.CART_NOT_FOUND_EXCEPTION_MESSAGE));
+
+        List<Long> itemIds = cartDetails.stream().map(CartDetails::getItemId).toList();
+
+        Object cartPagination = stockPersistencePort.getCartPagination(itemIds, paginationUtil);
+
+        return null;
     }
 
     private void validateItemExistence(Long itemId){

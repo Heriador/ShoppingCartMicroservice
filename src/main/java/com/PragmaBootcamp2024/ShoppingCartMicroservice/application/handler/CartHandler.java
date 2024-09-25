@@ -6,6 +6,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.mapper.CartRequestMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.mapper.CartResponseMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartServicePort;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,17 @@ public class CartHandler implements ICartHandler {
 
         cartServicePort.deleteItem(itemId);
 
+       return null;
+    }
+
+
+    @Override
+    public CartResponse getCart(PaginationUtil paginationUtil) {
+
+        CartDetails cart = cartServicePort.getCart(paginationUtil);
+
         return null;
     }
+
+
 }
