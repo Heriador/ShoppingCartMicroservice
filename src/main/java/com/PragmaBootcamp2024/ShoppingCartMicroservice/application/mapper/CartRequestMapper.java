@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface CartRequestMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cartId", ignore = true)
+    @Mapping(target = "cart", ignore = true)
     @Mapping(target = "itemId", source = "itemId")
     @Mapping(target = "quantity", source = "quantity")
     CartDetails toCart(CartRequest cartRequest);

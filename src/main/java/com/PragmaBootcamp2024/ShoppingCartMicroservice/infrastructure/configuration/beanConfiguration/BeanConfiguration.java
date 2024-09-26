@@ -5,7 +5,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.*;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases.CartDetailsUseCases;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.feignClient.ITransactionFeignClient;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.adapter.*;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsMapper;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsEntityMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartEntityMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.repository.CartDetailsRepository;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.repository.CartRepository;
@@ -23,7 +23,7 @@ public class BeanConfiguration {
     private final CartRepository cartRepository;
     private final CartEntityMapper cartEntityMapper;
     private final CartDetailsRepository cartDetailsRepository;
-    private final CartDetailsMapper cartDetailsMapper;
+    private final CartDetailsEntityMapper cartDetailsEntityMapper;
     private final IStockFeignClient stockFeignClient;
     private final ITransactionFeignClient transactionFeignClient;
 
@@ -34,7 +34,7 @@ public class BeanConfiguration {
 
     @Bean
     public ICartDetailsPersistencePort cartDetailsPersistencePort(){
-        return new CartDetailsAdapter(cartDetailsRepository, cartDetailsMapper);
+        return new CartDetailsAdapter(cartDetailsRepository, cartDetailsEntityMapper);
     }
 
     @Bean

@@ -39,7 +39,7 @@ public class CartUseCases implements ICartServicePort {
 
             cart = createCart(userId);
         }
-        cartDetails.setCartId(cart.getId());
+        cartDetails.setCart(cart);
 
         cartDetailsServicePort.addProduct(cartDetails);
 

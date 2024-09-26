@@ -39,7 +39,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     public void addProduct(CartDetails cartDetails) {
 
 
-        CartDetails existingDetail = cartDetailsPersistencePort.getCartDetails(cartDetails.getCartId(), cartDetails.getItemId())
+        CartDetails existingDetail = cartDetailsPersistencePort.getCartDetails(cartDetails.getCart().getId(), cartDetails.getItemId())
                                                                         .orElse(DomainConstants.NULL_CART_DETAILS);
 
         validateItemExistence(cartDetails.getItemId());
@@ -56,7 +56,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
 
         }
         else{
-            List<Long> itemIds = new ArrayList<>(cartDetailsPersistencePort.getItemIdsByCartId(cartDetails.getCartId()));
+            List<Long> itemIds = new ArrayList<>(cartDetailsPersistencePort.getItemIdsByCartId(cartDetails.getCart().getId()));
             itemIds.add(cartDetails.getItemId());
 
             validateLimitItemPerCategory(itemIds);
