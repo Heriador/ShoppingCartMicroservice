@@ -2,6 +2,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.my
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.entity.CartDetailsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -15,4 +16,9 @@ public interface CartDetailsRepository extends JpaRepository<CartDetailsEntity, 
     List<Long> findItemIdsByCartId(@Param("cartId") Long cartId);
 
     Optional<List<CartDetailsEntity>> findByCartId(Long cartId);
+
+    @Modifying
+    @Query("DELETE FROM CartDetailsEntity cd where cd.cart.id = :cartId AND cd.itemId = :itemId")
+    void deleteByCartIdAndItemId(@Param("cartId")Long cartId,
+                                 @Param("itemId")Long itemId);
 }

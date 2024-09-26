@@ -54,7 +54,7 @@ public class CartUseCases implements ICartServicePort {
 
             Cart cart = cartPersistencePort.existsCart(userId).orElseThrow(()-> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
 
-            cartDetailsServicePort.deleteItem(itemId, cart.getId());
+            cartDetailsServicePort.deleteItem(itemId, cart);
 
             cart.setUpdatedAt(LocalDateTime.now());
             cartPersistencePort.saveCart(cart);

@@ -37,8 +37,9 @@ public class CartDetailsAdapter implements ICartDetailsPersistencePort {
     }
 
     @Override
-    public void deleteItemFromCart(CartDetails cartDetails) {
-        cartDetailsRepository.delete(cartDetailsEntityMapper.toEntity(cartDetails));
+    public void deleteItemFromCart(Long cartId, Long itemId) {
+
+        cartDetailsRepository.deleteByCartIdAndItemId(cartId, itemId);
     }
 
     @Override

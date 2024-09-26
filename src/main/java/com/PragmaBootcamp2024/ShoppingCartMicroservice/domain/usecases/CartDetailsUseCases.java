@@ -2,6 +2,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.ItemCartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.QuantityNotPositiveException;
@@ -68,11 +69,12 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     }
 
     @Override
-    public void deleteItem(Long itemId, Long id) {
-        CartDetails cartDetails = cartDetailsPersistencePort.getCartDetails(id, itemId)
+    public void deleteItem(Long itemId, Cart cart) {
+
+        CartDetails cartDetail = cart.getItems().stream().filter(item -> item.getItemId().equals(itemId)).findFirst()
                 .orElseThrow(() -> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
 
-        cartDetailsPersistencePort.deleteItemFromCart(cartDetails);
+        cartDetailsPersistencePort.deleteItemFromCart(cart.getId(), cartDetail.getItemId());
     }
 
     @Override
