@@ -40,4 +40,13 @@ public class CartDetailsAdapter implements ICartDetailsPersistencePort {
     public void deleteItemFromCart(CartDetails cartDetails) {
         cartDetailsRepository.delete(cartDetailsMapper.toEntity(cartDetails));
     }
+
+    @Override
+    public Optional<List<CartDetails>> findByCartId(Long cartId) {
+
+        Optional<List<CartDetailsEntity>> cartDetails = cartDetailsRepository.findByCartId(cartId);
+
+        return cartDetails.map(cartDetailsMapper::toCartDetailsList);
+
+    }
 }
