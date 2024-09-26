@@ -96,7 +96,7 @@ class CartUseCasesTest {
 
         when(authenticationPersistencePort.getAuthenticatedUserId()).thenReturn(1L);
         when(cartPersistencePort.existsCart(1L)).thenReturn(Optional.of(cart));
-        doNothing().when(cartDetailsServicePort).deleteItem(anyLong(), anyLong());
+        doNothing().when(cartDetailsServicePort).deleteItem(anyLong(), any(Cart.class));
         doNothing().when(cartPersistencePort).saveCart(cart);
 
         // Act
@@ -105,7 +105,7 @@ class CartUseCasesTest {
         // Assert
         verify(authenticationPersistencePort, times(1)).getAuthenticatedUserId();
         verify(cartPersistencePort, times(1)).existsCart(1L);
-        verify(cartDetailsServicePort, times(1)).deleteItem(1L, 1L);
+        verify(cartDetailsServicePort, times(1)).deleteItem(1L, cart);
         verify(cartPersistencePort, times(1)).saveCart(cart);
     }
 

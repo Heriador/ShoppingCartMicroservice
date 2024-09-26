@@ -14,12 +14,11 @@ public class CartDetailsFactory {
 
     static {
         cartDetails = new CartDetails();
-        cartDetails.setCartId(1L);
         cartDetails.setItemId(1L);
         cartDetails.setQuantity(1);
 
         cartDetailsEntity = new CartDetailsEntity();
-        cartDetailsEntity.setCartId(cartDetails.getCartId());
+        cartDetailsEntity.setCart(CartFactory.getCartEntity());
         cartDetailsEntity.setItemId(cartDetails.getItemId());
         cartDetailsEntity.setQuantity(cartDetails.getQuantity());
 
