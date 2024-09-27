@@ -60,6 +60,17 @@ public class CartUseCases implements ICartServicePort {
             cartPersistencePort.saveCart(cart);
     }
 
+
+    @Override
+    public PaginationCustom<Item> getCart(PaginationUtil paginationUtil) {
+
+        Long userId = authenticationPersistencePort.getAuthenticatedUserId();
+
+        Cart cart = cartPersistencePort.existsCart(userId).orElseThrow(()-> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
+
+        return cartDetailsServicePort.getCart(cart.getItems(), paginationUtil);
+    }
+
     private Cart createCart(Long userId) {
         Cart cart = new Cart();
 
@@ -69,15 +80,5 @@ public class CartUseCases implements ICartServicePort {
         cartPersistencePort.saveCart(cart);
 
         return cart;
-    }
-
-    @Override
-    public PaginationCustom<Item> getCart(PaginationUtil paginationUtil) {
-
-        Long userId = authenticationPersistencePort.getAuthenticatedUserId();
-
-        Cart cart = cartPersistencePort.existsCart(userId).orElseThrow(()-> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
-
-        return cartDetailsServicePort.getCart(cart.getId(), paginationUtil);
     }
 }

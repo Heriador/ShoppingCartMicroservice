@@ -16,14 +16,13 @@ public class PaginationCustom<T> {
     public PaginationCustom() {
     }
 
-    public PaginationCustom(List<T> content, Integer pageNumber, Integer pageSize, Long totalElements, Integer totalPages, Boolean last, BigDecimal totalPrice) {
+    public PaginationCustom(List<T> content, Integer pageNumber, Integer pageSize, Long totalElements, Integer totalPages, Boolean last) {
         this.content = content;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
         this.last = last;
-        this.totalPrice = totalPrice;
     }
 
     public List<T> getContent() {
@@ -66,7 +65,7 @@ public class PaginationCustom<T> {
         this.totalPages = totalPages;
     }
 
-    public Boolean getLast() {
+    public Boolean isLast() {
         return last;
     }
 

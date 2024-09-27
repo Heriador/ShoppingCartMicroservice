@@ -14,5 +14,4 @@ public interface ICartDetailsPersistencePort {
 
     void deleteItemFromCart(Long cartId, Long itemId);
 
-    Optional<List<CartDetails>> findByCartId(Long cartId);
 }

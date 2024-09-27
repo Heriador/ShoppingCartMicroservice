@@ -42,12 +42,4 @@ public class CartDetailsAdapter implements ICartDetailsPersistencePort {
         cartDetailsRepository.deleteByCartIdAndItemId(cartId, itemId);
     }
 
-    @Override
-    public Optional<List<CartDetails>> findByCartId(Long cartId) {
-
-        Optional<List<CartDetailsEntity>> cartDetails = cartDetailsRepository.findByCartId(cartId);
-
-        return cartDetails.map(cartDetailsEntityMapper::toCartDetailsList);
-
-    }
 }

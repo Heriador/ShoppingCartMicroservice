@@ -1,13 +1,13 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler;
 
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.ItemCartResponse;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.PaginationResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.mapper.CartRequestMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.mapper.CartResponseMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartServicePort;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class CartHandler implements ICartHandler {
 
         cartServicePort.addProduct(cart);
 
-        return new CartResponse(cartRequest.getQuantity(), cartRequest.getItemId());
+        return cartResponseMapper.toCartResponse(cartRequest);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class CartHandler implements ICartHandler {
 
 
     @Override
-    public PaginationCustom<Item> getCart(PaginationUtil paginationUtil) {
+    public PaginationResponse<ItemCartResponse> getCart(PaginationUtil paginationUtil) {
 
-        return cartServicePort.getCart(paginationUtil);
+        return cartResponseMapper.toPaginationResponse(cartServicePort.getCart(paginationUtil));
     }
 }

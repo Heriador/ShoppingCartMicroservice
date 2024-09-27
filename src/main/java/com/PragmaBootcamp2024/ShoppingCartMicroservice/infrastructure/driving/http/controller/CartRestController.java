@@ -3,9 +3,9 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.h
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.DeleteResponse;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.ItemCartResponse;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.PaginationResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler.ICartHandler;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ public class CartRestController {
 
     @PreAuthorize(HAS_ROLE_CLIENT)
     @GetMapping(GET_CART_ROUTE)
-    public ResponseEntity<PaginationCustom<Item>> getCart(
+    public ResponseEntity<PaginationResponse<ItemCartResponse>> getCart(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "order", defaultValue = "true") Boolean order,
@@ -53,7 +53,7 @@ public class CartRestController {
         paginationUtil.setOrder(order);
         paginationUtil.setFilterByBrandName(filterByBrandName);
         paginationUtil.setFilterByCategoryName(filterByCategoryName);
-        PaginationCustom<Item> cartResponse = cartHandler.getCart(paginationUtil);
+        PaginationResponse<ItemCartResponse> cartResponse = cartHandler.getCart(paginationUtil);
 
         return ResponseEntity.ok(cartResponse);
     }
