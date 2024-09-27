@@ -10,5 +10,5 @@ public interface ICartServicePort {
 
     void deleteItem(Long itemId);
 
-    PaginationCustom<Item> getCart(PaginationUtil paginationUtil);
+    PaginationCustom<Item> getItemsFromCartPaginated(PaginationUtil paginationUtil);
 }

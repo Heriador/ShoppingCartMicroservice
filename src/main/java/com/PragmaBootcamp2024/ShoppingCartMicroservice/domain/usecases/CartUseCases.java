@@ -62,13 +62,13 @@ public class CartUseCases implements ICartServicePort {
 
 
     @Override
-    public PaginationCustom<Item> getCart(PaginationUtil paginationUtil) {
+    public PaginationCustom<Item> getItemsFromCartPaginated(PaginationUtil paginationUtil) {
 
         Long userId = authenticationPersistencePort.getAuthenticatedUserId();
 
         Cart cart = cartPersistencePort.existsCart(userId).orElseThrow(()-> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
 
-        return cartDetailsServicePort.getCart(cart.getItems(), paginationUtil);
+        return cartDetailsServicePort.getItemsFromCartPaginated(cart.getItems(), paginationUtil);
     }
 
     private Cart createCart(Long userId) {

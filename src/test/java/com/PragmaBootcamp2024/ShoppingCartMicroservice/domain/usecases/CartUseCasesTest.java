@@ -127,7 +127,7 @@ class CartUseCasesTest {
 
     @Test
     @DisplayName("Get cart should pass")
-    void getCartShouldPass() {
+    void getItemsFromCartPaginatedShouldPass() {
         // Arrange
         Cart cart = CartFactory.getCart();
         PaginationUtil paginationUtil = new PaginationUtil();
@@ -138,10 +138,10 @@ class CartUseCasesTest {
 
         when(authenticationPersistencePort.getAuthenticatedUserId()).thenReturn(1L);
         when(cartPersistencePort.existsCart(any())).thenReturn(Optional.of(cart));
-        when(cartDetailsServicePort.getCart(anyList(), any())).thenReturn(expected);
+        when(cartDetailsServicePort.getItemsFromCartPaginated(anyList(), any())).thenReturn(expected);
 
         // Act
-        PaginationCustom<Item> paginationCustom = cartUseCases.getCart(paginationUtil);
+        PaginationCustom<Item> paginationCustom = cartUseCases.getItemsFromCartPaginated(paginationUtil);
 
         // Assert
 
@@ -149,12 +149,12 @@ class CartUseCasesTest {
 
         verify(authenticationPersistencePort, times(1)).getAuthenticatedUserId();
         verify(cartPersistencePort, times(1)).existsCart(1L);
-        verify(cartDetailsServicePort, times(1)).getCart(anyList(), any(PaginationUtil.class));
+        verify(cartDetailsServicePort, times(1)).getItemsFromCartPaginated(anyList(), any(PaginationUtil.class));
     }
 
     @Test
     @DisplayName("Get cart should throw NoItemFoundException")
-    void getCartShouldThrowNoItemFoundException() {
+    void getItemsFromCartPaginatedShouldThrowNoItemFoundException() {
         // Arrange
         PaginationUtil paginationUtil = new PaginationUtil();
         paginationUtil.setPage(0);
@@ -164,7 +164,7 @@ class CartUseCasesTest {
         when(cartPersistencePort.existsCart(any())).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(NoItemFoundException.class, () -> cartUseCases.getCart(paginationUtil));
+        assertThrows(NoItemFoundException.class, () -> cartUseCases.getItemsFromCartPaginated(paginationUtil));
 
         verify(authenticationPersistencePort, times(1)).getAuthenticatedUserId();
         verify(cartPersistencePort, times(1)).existsCart(1L);
