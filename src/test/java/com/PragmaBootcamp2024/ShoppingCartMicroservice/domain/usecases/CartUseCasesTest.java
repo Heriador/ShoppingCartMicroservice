@@ -4,10 +4,14 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartDetailsSe
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IAuthenticationPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartPersistencePort;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartDetailsFactory;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartFactory;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.ItemFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -119,6 +123,51 @@ class CartUseCasesTest {
 
         // Act & Assert
         assertThrows(NoItemFoundException.class, () -> cartUseCases.deleteItem(1L));
+    }
+
+    @Test
+    @DisplayName("Get cart should pass")
+    void getCartShouldPass() {
+        // Arrange
+        Cart cart = CartFactory.getCart();
+        PaginationUtil paginationUtil = new PaginationUtil();
+        paginationUtil.setPage(0);
+        paginationUtil.setSize(5);
+
+        PaginationCustom<Item> expected = ItemFactory.getPaginationCustom();
+
+        when(authenticationPersistencePort.getAuthenticatedUserId()).thenReturn(1L);
+        when(cartPersistencePort.existsCart(any())).thenReturn(Optional.of(cart));
+        when(cartDetailsServicePort.getCart(anyList(), any())).thenReturn(expected);
+
+        // Act
+        PaginationCustom<Item> paginationCustom = cartUseCases.getCart(paginationUtil);
+
+        // Assert
+
+        assertEquals(expected, paginationCustom);
+
+        verify(authenticationPersistencePort, times(1)).getAuthenticatedUserId();
+        verify(cartPersistencePort, times(1)).existsCart(1L);
+        verify(cartDetailsServicePort, times(1)).getCart(anyList(), any(PaginationUtil.class));
+    }
+
+    @Test
+    @DisplayName("Get cart should throw NoItemFoundException")
+    void getCartShouldThrowNoItemFoundException() {
+        // Arrange
+        PaginationUtil paginationUtil = new PaginationUtil();
+        paginationUtil.setPage(0);
+        paginationUtil.setSize(5);
+
+        when(authenticationPersistencePort.getAuthenticatedUserId()).thenReturn(1L);
+        when(cartPersistencePort.existsCart(any())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NoItemFoundException.class, () -> cartUseCases.getCart(paginationUtil));
+
+        verify(authenticationPersistencePort, times(1)).getAuthenticatedUserId();
+        verify(cartPersistencePort, times(1)).existsCart(1L);
     }
 
 }

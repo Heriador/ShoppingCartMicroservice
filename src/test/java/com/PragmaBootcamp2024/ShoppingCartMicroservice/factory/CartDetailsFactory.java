@@ -4,7 +4,10 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.C
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.entity.CartDetailsEntity;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class CartDetailsFactory {
 
     private static final CartDetails cartDetails;

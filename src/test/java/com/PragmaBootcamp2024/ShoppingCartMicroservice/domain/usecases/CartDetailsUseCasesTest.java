@@ -1,16 +1,18 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NoItemFoundException;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.NotEnoughStockException;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.QuantityNotPositiveException;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.ItemCartRequest;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.*;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartDetailsPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IStockPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ITransactionPersistencePort;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartDetailsFactory;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartFactory;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.ItemFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -195,9 +198,63 @@ class CartDetailsUseCasesTest {
         Cart cart = CartFactory.getCart();
 
 
-        // Act & Assert
         assertThrows(NoItemFoundException.class, () -> cartDetailsUseCases.deleteItem(2L, cart));
 
-        // Assert
+    }
+
+    @Test
+    @DisplayName("Get cart should pass")
+    void getCartShouldPass() {
+
+        Cart cart = CartFactory.getCart();
+
+        CartDetails cartDetails = CartDetailsFactory.getCartDetails();
+        cartDetails.setCart(cart);
+
+        CartDetails cartDetails1 = new CartDetails(2L, cart, 2L,5);
+
+        PaginationUtil paginationUtil = new PaginationUtil();
+        paginationUtil.setPage(0);
+        paginationUtil.setSize(5);
+        paginationUtil.setOrder(true);
+        PaginationCustom<Item> paginationCustom = ItemFactory.getPaginationCustom();
+
+        when(stockPersistencePort.getCartPagination(any(ItemCartRequest.class), any(PaginationUtil.class)))
+                .thenReturn(paginationCustom);
+        when(transactionPersistencePort.getNextSupplyDateByItemId(anyLong())).thenReturn(LocalDate.now());
+        when(stockPersistencePort.getPriceById(anyLong())).thenReturn(BigDecimal.ONE);
+
+        PaginationCustom<Item> result = cartDetailsUseCases.getCart(List.of(cartDetails,cartDetails1), paginationUtil);
+
+        assertEquals(paginationCustom.getContent(), result.getContent());
+        assertEquals(paginationCustom.getTotalElements(), result.getTotalElements());
+        assertEquals(paginationCustom.getTotalPages(), result.getTotalPages());
+        assertEquals(paginationCustom.isLast(), result.isLast());
+        assertEquals(paginationCustom.getPageNumber(), result.getPageNumber());
+        assertEquals(paginationCustom.getPageSize(), result.getPageSize());
+        assertEquals(paginationCustom.getTotalPrice(), result.getTotalPrice());
+
+        verify(stockPersistencePort, times(1)).getCartPagination(any(ItemCartRequest.class), any(PaginationUtil.class));
+        verify(transactionPersistencePort, atLeast(1)).getNextSupplyDateByItemId(anyLong());
+        verify(stockPersistencePort, atLeast(1)).getPriceById(anyLong());
+
+
+
+    }
+
+    @Test
+    @DisplayName("Get cart should throw ValidationException for paginotionUtil invalid values")
+    void getCartShouldThrowValidationException() {
+        Cart cart = CartFactory.getCart();
+
+        CartDetails cartDetails = CartDetailsFactory.getCartDetails();
+        cartDetails.setCart(cart);
+
+        PaginationUtil paginationUtil = new PaginationUtil();
+        paginationUtil.setPage(-1);
+        paginationUtil.setSize(-1);
+        paginationUtil.setOrder(true);
+
+        assertThrows(ValidationException.class, () -> cartDetailsUseCases.getCart(List.of(cartDetails), paginationUtil));
     }
 }
