@@ -82,10 +82,10 @@ class CartHandlerTest {
         PaginationCustom<Item> paginationCustom = ItemFactory.getPaginationCustom();
         PaginationResponse<ItemCartResponse> paginationResponse = ItemFactory.getPaginationResponse();
 
-        when(cartServicePort.getCart(paginationUtil)).thenReturn(paginationCustom);
+        when(cartServicePort.getItemsFromCartPaginated(paginationUtil)).thenReturn(paginationCustom);
         when(cartResponseMapper.toPaginationResponse(any(paginationCustom.getClass()))).thenReturn(paginationResponse);
 
-        PaginationResponse<ItemCartResponse> response = cartHandler.getCart(paginationUtil);
+        PaginationResponse<ItemCartResponse> response = cartHandler.getItemsFromCartPaginated(paginationUtil);
 
         assertEquals(paginationResponse.getTotalPages(), response.getTotalPages());
         assertEquals(paginationResponse.getTotalElements(), response.getTotalElements());
@@ -96,7 +96,7 @@ class CartHandlerTest {
         assertEquals(paginationResponse.getTotalPrice(), response.getTotalPrice());
 
 
-        verify(cartServicePort, times(1)).getCart(paginationUtil);
+        verify(cartServicePort, times(1)).getItemsFromCartPaginated(paginationUtil);
         verify(cartResponseMapper, times(1)).toPaginationResponse(paginationCustom);
     }
 

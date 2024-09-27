@@ -204,7 +204,7 @@ class CartDetailsUseCasesTest {
 
     @Test
     @DisplayName("Get cart should pass")
-    void getCartShouldPass() {
+    void getItemsFromCartPaginatedShouldPass() {
 
         Cart cart = CartFactory.getCart();
 
@@ -224,7 +224,7 @@ class CartDetailsUseCasesTest {
         when(transactionPersistencePort.getNextSupplyDateByItemId(anyLong())).thenReturn(LocalDate.now());
         when(stockPersistencePort.getPriceById(anyLong())).thenReturn(BigDecimal.ONE);
 
-        PaginationCustom<Item> result = cartDetailsUseCases.getCart(List.of(cartDetails,cartDetails1), paginationUtil);
+        PaginationCustom<Item> result = cartDetailsUseCases.getItemsFromCartPaginated(List.of(cartDetails,cartDetails1), paginationUtil);
 
         assertEquals(paginationCustom.getContent(), result.getContent());
         assertEquals(paginationCustom.getTotalElements(), result.getTotalElements());
@@ -244,7 +244,7 @@ class CartDetailsUseCasesTest {
 
     @Test
     @DisplayName("Get cart should throw ValidationException for paginotionUtil invalid values")
-    void getCartShouldThrowValidationException() {
+    void getItemsFromCartPaginatedShouldThrowValidationException() {
         Cart cart = CartFactory.getCart();
 
         CartDetails cartDetails = CartDetailsFactory.getCartDetails();
@@ -255,6 +255,6 @@ class CartDetailsUseCasesTest {
         paginationUtil.setSize(-1);
         paginationUtil.setOrder(true);
 
-        assertThrows(ValidationException.class, () -> cartDetailsUseCases.getCart(List.of(cartDetails), paginationUtil));
+        assertThrows(ValidationException.class, () -> cartDetailsUseCases.getItemsFromCartPaginated(List.of(cartDetails), paginationUtil));
     }
 }

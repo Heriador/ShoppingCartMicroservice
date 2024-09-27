@@ -38,8 +38,8 @@ public class CartHandler implements ICartHandler {
 
 
     @Override
-    public PaginationResponse<ItemCartResponse> getCart(PaginationUtil paginationUtil) {
+    public PaginationResponse<ItemCartResponse> getItemsFromCartPaginated(PaginationUtil paginationUtil) {
 
-        return cartResponseMapper.toPaginationResponse(cartServicePort.getCart(paginationUtil));
+        return cartResponseMapper.toPaginationResponse(cartServicePort.getItemsFromCartPaginated(paginationUtil));
     }
 }

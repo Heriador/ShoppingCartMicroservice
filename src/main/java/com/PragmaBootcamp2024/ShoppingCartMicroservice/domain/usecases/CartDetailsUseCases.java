@@ -80,7 +80,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     }
 
     @Override
-    public PaginationCustom<Item> getCart(List<CartDetails> cartDetails, PaginationUtil paginationUtil) {
+    public PaginationCustom<Item> getItemsFromCartPaginated(List<CartDetails> cartDetails, PaginationUtil paginationUtil) {
 
         PaginationValidator.validate(paginationUtil);
         List<Long> itemIds = cartDetails.stream().map(CartDetails::getItemId).toList();

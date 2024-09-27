@@ -99,7 +99,7 @@ public class CartRestController {
                     description = DocumentationConstants.DESCRIPTION_STATUS_404,
                     content = @Content)
     })
-    public ResponseEntity<PaginationResponse<ItemCartResponse>> getCart(
+    public ResponseEntity<PaginationResponse<ItemCartResponse>> getItemsFromCartPaginated(
             @RequestParam(defaultValue = PAGE_PARAM_DEFAULT_VALUE) Integer page,
             @RequestParam(defaultValue = SIZE_PARAM_DEFAULT_VALUE) Integer size,
             @RequestParam(defaultValue = ORDER_PARAM_DEFAULT_VALUE) Boolean order,
@@ -112,7 +112,7 @@ public class CartRestController {
         paginationUtil.setOrder(order);
         paginationUtil.setFilterByBrandName(filterByBrandName);
         paginationUtil.setFilterByCategoryName(filterByCategoryName);
-        PaginationResponse<ItemCartResponse> cartResponse = cartHandler.getCart(paginationUtil);
+        PaginationResponse<ItemCartResponse> cartResponse = cartHandler.getItemsFromCartPaginated(paginationUtil);
 
         return ResponseEntity.ok(cartResponse);
     }

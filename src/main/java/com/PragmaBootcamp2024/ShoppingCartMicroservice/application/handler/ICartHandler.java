@@ -11,5 +11,5 @@ public interface ICartHandler {
 
     void deleteItem(Long itemId);
 
-    PaginationResponse<ItemCartResponse> getCart(PaginationUtil paginationUtil);
+    PaginationResponse<ItemCartResponse> getItemsFromCartPaginated(PaginationUtil paginationUtil);
 }
