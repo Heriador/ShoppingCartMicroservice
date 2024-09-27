@@ -1,9 +1,11 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.adapter;
 
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartDetailsFactory;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.factory.CartFactory;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.entity.CartDetailsEntity;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsMapper;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsEntityMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.repository.CartDetailsRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ class CartDetailsAdapterTest {
     private CartDetailsRepository cartDetailsRepository;
 
     @Mock
-    private CartDetailsMapper cartDetailsMapper;
+    private CartDetailsEntityMapper cartDetailsEntityMapper;
 
     @InjectMocks
     private CartDetailsAdapter cartDetailsAdapter;
@@ -33,13 +35,13 @@ class CartDetailsAdapterTest {
     @DisplayName("Add product to cart should pass")
     void addProductToCartShouldPass() {
 
-        when(cartDetailsMapper.toEntity(any(CartDetails.class))).thenReturn(CartDetailsFactory.getCartDetailsEntity());
+        when(cartDetailsEntityMapper.toEntity(any(CartDetails.class))).thenReturn(CartDetailsFactory.getCartDetailsEntity());
         when(cartDetailsRepository.save(CartDetailsFactory.getCartDetailsEntity())).thenReturn(CartDetailsFactory.getCartDetailsEntity());
 
 
         cartDetailsAdapter.addProductToCart(CartDetailsFactory.getCartDetails());
 
-        verify(cartDetailsMapper, times(1)).toEntity(CartDetailsFactory.getCartDetails());
+        verify(cartDetailsEntityMapper, times(1)).toEntity(CartDetailsFactory.getCartDetails());
         verify(cartDetailsRepository, times(1)).save(CartDetailsFactory.getCartDetailsEntity());
 
     }
@@ -48,12 +50,12 @@ class CartDetailsAdapterTest {
     @DisplayName("Get cart details should pass")
     void getCartDetailsShouldPass() {
         when(cartDetailsRepository.findByCartIdAndItemId(anyLong(), anyLong())).thenReturn(java.util.Optional.of(CartDetailsFactory.getCartDetailsEntity()));
-        when(cartDetailsMapper.toCartDetails(CartDetailsFactory.getCartDetailsEntity())).thenReturn(CartDetailsFactory.getCartDetails());
+        when(cartDetailsEntityMapper.toCartDetails(CartDetailsFactory.getCartDetailsEntity())).thenReturn(CartDetailsFactory.getCartDetails());
 
         assertEquals(CartDetailsFactory.getCartDetails(), cartDetailsAdapter.getCartDetails(1L, 1L).get());
 
         verify(cartDetailsRepository, times(1)).findByCartIdAndItemId(1L, 1L);
-        verify(cartDetailsMapper, times(1)).toCartDetails(CartDetailsFactory.getCartDetailsEntity());
+        verify(cartDetailsEntityMapper, times(1)).toCartDetails(CartDetailsFactory.getCartDetailsEntity());
     }
 
     @Test
@@ -73,16 +75,14 @@ class CartDetailsAdapterTest {
     @DisplayName("Delete item should pass")
     void deleteItemShouldPass() {
 
-        CartDetailsEntity cartDetailsEntity = CartDetailsFactory.getCartDetailsEntity();
         CartDetails cartDetails = CartDetailsFactory.getCartDetails();
+        Cart cart = CartFactory.getCart();
 
-        when(cartDetailsMapper.toEntity(cartDetails)).thenReturn(cartDetailsEntity);
-        doNothing().when(cartDetailsRepository).delete(any(CartDetailsEntity.class));
+        doNothing().when(cartDetailsRepository).deleteByCartIdAndItemId(anyLong(), anyLong());
 
-        cartDetailsAdapter.deleteItemFromCart(cartDetails);
+        cartDetailsAdapter.deleteItemFromCart(cart.getId(), cartDetails.getItemId());
 
-        verify(cartDetailsMapper, times(1)).toEntity(cartDetails);
-        verify(cartDetailsRepository, times(1)).delete(cartDetailsEntity);
+        verify(cartDetailsRepository, times(1)).deleteByCartIdAndItemId(anyLong(), anyLong());
 
     }
 

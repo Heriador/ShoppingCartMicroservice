@@ -3,7 +3,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.my
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartDetailsPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.entity.CartDetailsEntity;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsMapper;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsEntityMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.repository.CartDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +16,11 @@ import java.util.Optional;
 public class CartDetailsAdapter implements ICartDetailsPersistencePort {
 
     private final CartDetailsRepository cartDetailsRepository;
-    private final CartDetailsMapper cartDetailsMapper;
+    private final CartDetailsEntityMapper cartDetailsEntityMapper;
 
     @Override
     public void addProductToCart(CartDetails cartDetails) {
-        cartDetailsRepository.save(cartDetailsMapper.toEntity(cartDetails));
+        cartDetailsRepository.save(cartDetailsEntityMapper.toEntity(cartDetails));
     }
 
     @Override
@@ -28,7 +28,7 @@ public class CartDetailsAdapter implements ICartDetailsPersistencePort {
 
         Optional<CartDetailsEntity> cartDetails = cartDetailsRepository.findByCartIdAndItemId(cartId, productId);
 
-        return cartDetails.map(cartDetailsMapper::toCartDetails);
+        return cartDetails.map(cartDetailsEntityMapper::toCartDetails);
     }
 
     @Override
@@ -37,16 +37,9 @@ public class CartDetailsAdapter implements ICartDetailsPersistencePort {
     }
 
     @Override
-    public void deleteItemFromCart(CartDetails cartDetails) {
-        cartDetailsRepository.delete(cartDetailsMapper.toEntity(cartDetails));
+    public void deleteItemFromCart(Long cartId, Long itemId) {
+
+        cartDetailsRepository.deleteByCartIdAndItemId(cartId, itemId);
     }
 
-    @Override
-    public Optional<List<CartDetails>> findByCartId(Long cartId) {
-
-        Optional<List<CartDetailsEntity>> cartDetails = cartDetailsRepository.findByCartId(cartId);
-
-        return cartDetails.map(cartDetailsMapper::toCartDetailsList);
-
-    }
 }

@@ -2,6 +2,7 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.ItemCartRequest;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.LimitItemPerCategoryException;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.exceptions.QuantityNotPositiveException;
@@ -14,11 +15,13 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ICartDetailsPe
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.IStockPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.ITransactionPersistencePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationValidator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CartDetailsUseCases implements ICartDetailsServicePort {
 
@@ -39,8 +42,8 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     public void addProduct(CartDetails cartDetails) {
 
 
-        CartDetails existingDetail = cartDetailsPersistencePort.getCartDetails(cartDetails.getCartId(), cartDetails.getItemId())
-                                                                        .orElse(DomainConstants.NULL_CART_DETAILS);
+        CartDetails existingDetail = cartDetailsPersistencePort.getCartDetails(cartDetails.getCart().getId(),
+                        cartDetails.getItemId()).orElse(DomainConstants.NULL_CART_DETAILS);
 
         validateItemExistence(cartDetails.getItemId());
 
@@ -56,7 +59,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
 
         }
         else{
-            List<Long> itemIds = new ArrayList<>(cartDetailsPersistencePort.getItemIdsByCartId(cartDetails.getCartId()));
+            List<Long> itemIds = new ArrayList<>(cartDetailsPersistencePort.getItemIdsByCartId(cartDetails.getCart().getId()));
             itemIds.add(cartDetails.getItemId());
 
             validateLimitItemPerCategory(itemIds);
@@ -68,27 +71,44 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
     }
 
     @Override
-    public void deleteItem(Long itemId, Long id) {
-        CartDetails cartDetails = cartDetailsPersistencePort.getCartDetails(id, itemId)
+    public void deleteItem(Long itemId, Cart cart) {
+
+        CartDetails cartDetail = cart.getItems().stream().filter(item -> item.getItemId().equals(itemId)).findFirst()
                 .orElseThrow(() -> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
 
-        cartDetailsPersistencePort.deleteItemFromCart(cartDetails);
+        cartDetailsPersistencePort.deleteItemFromCart(cart.getId(), cartDetail.getItemId());
     }
 
     @Override
-    public PaginationCustom<Item> getCart(Long cartId, PaginationUtil paginationUtil) {
+    public PaginationCustom<Item> getCart(List<CartDetails> cartDetails, PaginationUtil paginationUtil) {
 
-        List<CartDetails> cartDetails = cartDetailsPersistencePort.findByCartId(cartId)
-                .orElseThrow(() -> new NoItemFoundException(DomainConstants.CART_NOT_FOUND_EXCEPTION_MESSAGE));
-
+        PaginationValidator.validate(paginationUtil);
         List<Long> itemIds = cartDetails.stream().map(CartDetails::getItemId).toList();
 
         ItemCartRequest itemCartRequest = new ItemCartRequest();
         itemCartRequest.setItemIds(itemIds);
         PaginationCustom<Item> cartPagination = stockPersistencePort.getCartPagination(itemCartRequest, paginationUtil);
 
-        cartPagination.getContent().forEach(item -> {
-            if(Objects.equals(item.getStock(), DomainConstants.ZERO_QUANTITY)){
+        if(cartPagination.getContent() != null){
+            updateItemDetailsWithSupplyDateAndCartInfo(cartDetails, cartPagination.getContent());
+        }
+
+        BigDecimal totalPrice = calculateTotalPrice(cartDetails);
+
+        cartPagination.setTotalPrice(totalPrice);
+
+        return cartPagination;
+    }
+
+    private void updateItemDetailsWithSupplyDateAndCartInfo(List<CartDetails> cartDetails, List<Item> itemsPaginated) {
+
+        Map<Long, CartDetails> cartDetailsMap = cartDetails.stream()
+                        .collect(Collectors.toMap(CartDetails::getItemId, cartDetail -> cartDetail));
+
+        for(Item item: itemsPaginated){
+            CartDetails cartDetail = cartDetailsMap.get(item.getId());
+
+            if(Objects.equals(item.getStock(), DomainConstants.ZERO_QUANTITY) || (item.getStock() < cartDetail.getQuantity())){
                 LocalDate nextSupplyDate = transactionPersistencePort.getNextSupplyDateByItemId(item.getId());
 
                 if(nextSupplyDate == null || nextSupplyDate.isBefore(LocalDate.now())){
@@ -101,41 +121,29 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
                 }
             }
 
-        });
 
-        BigDecimal totalPrice = calculateTotalPrice(cartId);
+            item.setCartQuantity(cartDetail.getQuantity());
+            item.setCartPrice(item.getPrice().multiply(BigDecimal.valueOf(cartDetail.getQuantity())));
+        }
 
-        cartPagination.setTotalPrice(totalPrice);
 
-        return cartPagination;
     }
 
-    private BigDecimal calculateTotalPrice(Long cartId) {
+    private BigDecimal calculateTotalPrice(List<CartDetails> cartDetails) {
         BigDecimal totalPrice = BigDecimal.ZERO;
 
-        List<Long> itemIds = cartDetailsPersistencePort.getItemIdsByCartId(cartId);
 
-        for(Long itemId : itemIds){
-          CartDetails cartDetails = cartDetailsPersistencePort.getCartDetails(cartId, itemId).orElse(null);
+        for(CartDetails cartDetail : cartDetails){
 
-          if(cartDetails == null){
-              continue;
-          }
 
-          BigDecimal itemPrice = stockPersistencePort.getPriceById(itemId);
-          totalPrice = totalPrice.add(itemPrice.multiply(BigDecimal.valueOf(cartDetails.getQuantity())));
+          BigDecimal itemPrice = stockPersistencePort.getPriceById(cartDetail.getItemId());
+          totalPrice = totalPrice.add(itemPrice.multiply(BigDecimal.valueOf(cartDetail.getQuantity())));
 
 
         }
 
-
-
         return totalPrice;
     }
-
-
-
-
 
 
 
@@ -182,4 +190,5 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
             }
         }
     }
+    
 }

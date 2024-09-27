@@ -1,20 +1,18 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.application.mapper;
 
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Cart;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.*;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import org.mapstruct.Mapper;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CartResponseMapper {
 
 
 
-    CartResponse toResponse(Cart cart);
+    CartResponse toCartResponse(CartRequest cartRequest);
 
-    List<CartResponse> toResponseList(List<Cart> cartList);
-
-    CartResponse toCartResponse(CartDetails cart);
+    PaginationResponse<ItemCartResponse> toPaginationResponse(PaginationCustom<Item> paginationCustom);
 }

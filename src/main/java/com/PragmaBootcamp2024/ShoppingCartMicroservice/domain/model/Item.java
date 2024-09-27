@@ -12,6 +12,8 @@ public class Item {
     private Brand brand;
     private List<Category> categories;
     private String nextSupplyDate;
+    private Integer cartQuantity;
+    private BigDecimal cartPrice;
 
     public Item() {
     }
@@ -88,5 +90,21 @@ public class Item {
 
     public void setNextSupplyDate(String nextSupplyDate) {
         this.nextSupplyDate = nextSupplyDate;
+    }
+
+    public Integer getCartQuantity() {
+        return cartQuantity;
+    }
+
+    public void setCartQuantity(Integer cartQuantity) {
+        this.cartQuantity = cartQuantity;
+    }
+
+    public BigDecimal getCartPrice() {
+        return cartPrice;
+    }
+
+    public void setCartPrice(BigDecimal cartPrice) {
+        this.cartPrice = cartPrice;
     }
 }

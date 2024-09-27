@@ -9,7 +9,6 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configurat
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
 

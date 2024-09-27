@@ -2,16 +2,16 @@ package com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model;
 
 public class CartDetails {
     private Long id;
-    private Long cartId;
+    private Cart cart;
     private Long itemId;
     private Integer quantity;
 
     public CartDetails() {
     }
 
-    public CartDetails(Long id, Long cartId, Long itemId, Integer quantity) {
+    public CartDetails(Long id, Cart cart, Long itemId, Integer quantity) {
         this.id = id;
-        this.cartId = cartId;
+        this.cart = cart;
         this.itemId = itemId;
         this.quantity = quantity;
     }
@@ -24,12 +24,12 @@ public class CartDetails {
         this.id = id;
     }
 
-    public Long getCartId() {
-        return cartId;
+    public Cart getCart() {
+        return cart;
     }
 
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public Long getItemId() {
