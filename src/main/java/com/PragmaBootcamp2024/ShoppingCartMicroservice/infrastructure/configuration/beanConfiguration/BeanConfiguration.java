@@ -4,6 +4,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartDetailsSe
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.spi.*;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases.CartDetailsUseCases;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.feignClient.ITransactionFeignClient;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.util.OpenAPIConstants;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.adapter.*;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartDetailsEntityMapper;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mysql.mapper.CartEntityMapper;
@@ -12,6 +13,8 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driven.mys
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.usecases.CartUseCases;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartServicePort;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.configuration.feignClient.IStockFeignClient;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,5 +63,14 @@ public class BeanConfiguration {
     @Bean
     public ICartServicePort cartServicePort(){
         return new CartUseCases(cartPersistencePort(), authenticationPersistencePort(), cartDetailsServicePort());
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title(OpenAPIConstants.API_TITLE)
+                        .version(OpenAPIConstants.API_VERSION)
+                        .description(OpenAPIConstants.API_DESCRIPTION));
     }
 }
