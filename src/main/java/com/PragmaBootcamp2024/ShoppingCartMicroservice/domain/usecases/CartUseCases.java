@@ -13,6 +13,7 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.DomainConstan
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CartUseCases implements ICartServicePort {
 
@@ -69,6 +70,15 @@ public class CartUseCases implements ICartServicePort {
         Cart cart = cartPersistencePort.existsCart(userId).orElseThrow(()-> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
 
         return cartDetailsServicePort.getItemsFromCartPaginated(cart.getItems(), paginationUtil);
+    }
+
+    @Override
+    public List<CartDetails> getCartItems() {
+        Long userId = authenticationPersistencePort.getAuthenticatedUserId();
+
+        Cart cart = cartPersistencePort.existsCart(userId).orElseThrow(()-> new NoItemFoundException(DomainConstants.ITEM_NOT_FOUND_EXCEPTION_MESSAGE));
+
+        return cart.getItems();
     }
 
     private Cart createCart(Long userId) {

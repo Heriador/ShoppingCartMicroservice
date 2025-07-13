@@ -7,6 +7,7 @@ public class RestControllerConstants {
     public static final String ADD_ITEM_ROUTE = "/add-product";
     public static final String DELETE_ITEM_ROUTE = "/delete-item/{itemId}";
     public static final String GET_CART_ROUTE = "/get-cart";
+    public static final String GET_CART_ITEMS_ROUTE = "/get-items";
     public static final String HAS_ROLE_CLIENT = "hasRole('CLIENT')";
 
     public static final String PAGE_PARAM_DEFAULT_VALUE = "0";

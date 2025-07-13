@@ -1,10 +1,14 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartDetailsResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.ItemCartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.PaginationResponse;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
+
+import java.util.List;
 
 public interface ICartHandler {
     CartResponse addProduct(CartRequest cartRequest);
@@ -12,4 +16,6 @@ public interface ICartHandler {
     void deleteItem(Long itemId);
 
     PaginationResponse<ItemCartResponse> getItemsFromCartPaginated(PaginationUtil paginationUtil);
+
+    List<CartDetailsResponse> getCartItems();
 }

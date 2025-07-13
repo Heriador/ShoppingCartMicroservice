@@ -5,10 +5,14 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.Item;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.PaginationCustom;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 
+import java.util.List;
+
 public interface ICartServicePort {
     void addProduct(CartDetails cartDetails);
 
     void deleteItem(Long itemId);
 
     PaginationCustom<Item> getItemsFromCartPaginated(PaginationUtil paginationUtil);
+
+    List<CartDetails> getCartItems();
 }

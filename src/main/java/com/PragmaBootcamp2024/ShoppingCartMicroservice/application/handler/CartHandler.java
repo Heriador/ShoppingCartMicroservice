@@ -1,5 +1,6 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler;
 
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartDetailsResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.ItemCartResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.PaginationResponse;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
@@ -11,6 +12,8 @@ import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.api.ICartServicePo
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +44,10 @@ public class CartHandler implements ICartHandler {
     public PaginationResponse<ItemCartResponse> getItemsFromCartPaginated(PaginationUtil paginationUtil) {
 
         return cartResponseMapper.toPaginationResponse(cartServicePort.getItemsFromCartPaginated(paginationUtil));
+    }
+
+    @Override
+    public List<CartDetailsResponse> getCartItems() {
+        return cartResponseMapper.toCartDetailsResponseList(cartServicePort.getCartItems());
     }
 }

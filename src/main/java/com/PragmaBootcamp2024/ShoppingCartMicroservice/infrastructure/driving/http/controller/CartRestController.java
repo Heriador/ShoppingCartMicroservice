@@ -1,11 +1,9 @@
 package com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.http.controller;
 
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.request.CartRequest;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.CartResponse;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.DeleteResponse;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.ItemCartResponse;
-import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.PaginationResponse;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.Dto.response.*;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.application.handler.ICartHandler;
+import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.model.CartDetails;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.domain.util.PaginationUtil;
 import com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.http.util.DocumentationConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.PragmaBootcamp2024.ShoppingCartMicroservice.infrastructure.driving.http.util.RestControllerConstants.*;
 
@@ -51,6 +51,7 @@ public class CartRestController {
                     content = @Content)
     })
     public ResponseEntity<CartResponse> addItem(@RequestBody CartRequest cartRequest) {
+        System.out.println(cartRequest);
         CartResponse cartResponse = cartHandler.addProduct(cartRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(cartResponse);
@@ -114,7 +115,14 @@ public class CartRestController {
         paginationUtil.setFilterByCategoryName(filterByCategoryName);
         PaginationResponse<ItemCartResponse> cartResponse = cartHandler.getItemsFromCartPaginated(paginationUtil);
 
+
         return ResponseEntity.ok(cartResponse);
+    }
+
+    @PreAuthorize(HAS_ROLE_CLIENT)
+    @GetMapping(GET_CART_ITEMS_ROUTE)
+    public ResponseEntity<List<CartDetailsResponse>> getCartItems() {
+        return ResponseEntity.ok(cartHandler.getCartItems());
     }
 
 }

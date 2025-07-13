@@ -45,6 +45,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
         CartDetails existingDetail = cartDetailsPersistencePort.getCartDetails(cartDetails.getCart().getId(),
                         cartDetails.getItemId()).orElse(DomainConstants.NULL_CART_DETAILS);
 
+
         validateItemExistence(cartDetails.getItemId());
 
         validateQuantity(cartDetails.getQuantity());
@@ -55,6 +56,7 @@ public class CartDetailsUseCases implements ICartDetailsServicePort {
         if(existingDetail != null){
 
             existingDetail.setQuantity(existingDetail.getQuantity() + cartDetails.getQuantity());
+            existingDetail.setCart(cartDetails.getCart());
             cartDetailsPersistencePort.addProductToCart(existingDetail);
 
         }
